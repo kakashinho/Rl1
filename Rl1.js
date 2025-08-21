@@ -1,5 +1,6 @@
+//Criando Objeto chamado personagem0 e guardando em uma constante
 const personagem0 = { 
-    nome: 'Steve Rodgers', 
+    nome: 'Steve Rodgers', //propriedades do Objeto -> nome, codinome, armaPrincipal ...
     codinome: 'Capitão América', 
     armaPrincipal: 'Escudo americano', 
     armaSecundaria: '', 
@@ -7,6 +8,7 @@ const personagem0 = {
     forca: 75, 
     resistencia: 80, 
     
+    //Essa função auxilia retornar a descrição inteira do objeto
     descricao: function() { 
         return `Nome do personagem: ${this.nome}\n` + 
                `Codinome do personagem: ${this.codinome}\n` + 
@@ -151,55 +153,38 @@ const personagem7 = {
     } 
 };
 
+//Criei um array dos personagens
 const personagens = [personagem0, personagem1, personagem2, personagem3, personagem4, personagem5, personagem6, personagem7];
 
-var resultados = {};
-
+//percorrendo todos os personagens e comparando com os outros 7 personagens
 for (let i = 0; i < personagens.length; i++) {
-    if (!resultados[personagens[i].nome]) {
-        resultados[personagens[i].nome] = {
-            vencedor: [],
-            perdedor: []
-        };
-    }
-
+    let vitorias = 0
     for (let x = 0; x < personagens.length; x++) {
         if (x != i) {
-            const comparacao_velocidade = personagens[i].velocidade - personagens[x].velocidade;
-            const comparacao_forca = personagens[i].forca - personagens[x].forca;
-            const comparacao_resistencia = personagens[i].resistencia - personagens[x].resistencia;
+            const dif_velocidade = Math.sign(personagens[i].velocidade - personagens[x].velocidade)
+            const dif_forca = Math.sign(personagens[i].forca - personagens[x].forca)
+            const dif_resistencia = Math.sign(personagens[i].resistencia - personagens[x].resistencia)
 
-            let vencedor = '';
-            let perdedor = '';
+            // Situações:    Velocidade     forca       resistencia       Somatória     
+            // Empatou          0             0             0                0                   
+            // Ganhou           1             1             1                3                   
+            // Perdeu          -1            -1            -1               -3
+            // Empatou         -1             1             0                0
+            // Ganhou           1             1            -1                1
+            // Empatou          1            -1             0                0
+            // Perdeu          -1            -1             1               -1                                            
 
-            if (comparacao_velocidade > 0 && comparacao_forca > 0) {
-                vencedor = personagens[i].nome;
-                perdedor = personagens[x].nome;
-            } else if (comparacao_velocidade > 0 && comparacao_resistencia > 0) {
-                vencedor = personagens[i].nome;
-                perdedor = personagens[x].nome;
-            } else if (comparacao_forca > 0 && comparacao_resistencia > 0) {
-                vencedor = personagens[i].nome;
-                perdedor = personagens[x].nome;
-            } else {
-                vencedor = personagens[x].nome;
-                perdedor = personagens[i].nome;
-            }
+            let pontuacao = dif_velocidade + dif_forca + dif_resistencia
 
-            if (!resultados[vencedor]) {
-                resultados[vencedor] = { vencedor: [], perdedor: [] };
+            if (pontuacao > 0){
+                console.log(personagens[i].nome + ' vs ' + personagens[x].nome+': ganhou '+ personagens[i].nome)
+                vitorias += 1
             }
-            if (!resultados[perdedor]) {
-                resultados[perdedor] = { vencedor: [], perdedor: [] };
-            }
-
-            if (vencedor && perdedor) {
-                resultados[vencedor].vencedor.push(perdedor);
-                resultados[perdedor].perdedor.push(vencedor);
-            }
+            else if (pontuacao === 0){console.log(personagens[i].nome + ' vs ' + personagens[x].nome+': empate')}  
+            else if (pontuacao < 0){console.log(personagens[i].nome + ' vs ' + personagens[x].nome+': perdeu '+ personagens[i].nome)}
         }
     }
+    console.log(personagens[i].nome+' Número de vitórias: '+vitorias)
+    console.log()
 }
 
-// Exibindo os resultados no console
-console.log(JSON.stringify(resultados, null, 2));
